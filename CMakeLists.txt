@@ -21,6 +21,7 @@ add_executable("ECS"
 	#src
 	${PROJECT_SOURCE_DIR}/main.cpp 
 	${PROJECT_SOURCE_DIR}/Entity/Entity.cpp
+	${PROJECT_SOURCE_DIR}/Entity/EntityManager.cpp
 	${PROJECT_SOURCE_DIR}/Component/Component.cpp
 	${PROJECT_SOURCE_DIR}/Component/TriangleComponent.cpp
 
@@ -63,13 +64,13 @@ find_package(assimp REQUIRED)
 #MESSAGE( STATUS "assimp:			"	assimp)
 #MESSAGE( STATUS "SOIL:				"	${SOIL})
 
-find_library(SOIL SOIL /usr/include/SOIL)
+#find_library(SOIL SOIL /usr/include/SOIL)
 
 # Link the packages
 target_link_libraries("ECS"
     PRIVATE ${OPENGL_LIBRARIES}
     PRIVATE ${GLEW_LIBRARIES}
-    PRIVATE glfw
-    PRIVATE assimp
-   	PRIVATE ${SOIL}
+    #PRIVATE glfw3}
+    #PRIVATE assimp}
+   	#PRIVATE ${SOIL}
 )

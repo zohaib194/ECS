@@ -8,11 +8,33 @@ namespace ECS{
 		public:
 			int id;
 
-			Entity(int id);
+			Entity();
 			//~Entity();
+			
+			
+			void setId(int id){
+				this->id = id;
+			}
+
+			int getId(){
+				return this->id;
+			}
+
+
+
 			virtual void addComponent(Component component);
-			template <class T> T
-			getComponent(std::string name);
+
+
+			template <typename T>
+			T getComponent(std::string name){
+				for(auto c : this->components){
+					if(c.getComponentName() == name){
+						return c;
+					}
+				}
+			}
+
+
 
 		private:
 			std::vector<Component> components;

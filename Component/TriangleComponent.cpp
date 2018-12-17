@@ -1,7 +1,7 @@
 #include "Component.hpp"
 #include <glm/glm.hpp>
 
-class TriangleComponent : public zECS::Component {
+class TriangleComponent : public ECS::Component {
 	private :
 		struct Mesh {
 			glm::vec3 vertices;
