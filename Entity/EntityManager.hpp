@@ -1,4 +1,5 @@
 #pragma once
+#include <iostream>
 #include <unordered_map> 
 #include <type_traits>
 #include "Entity.hpp"
@@ -9,7 +10,6 @@ namespace ECS{
 		public:
 
 			EntityManager(){
-
 			}
 
 			/**
@@ -23,17 +23,21 @@ namespace ECS{
 					printf("[ERROR] Entity is not devired from class Entity.\n");
 					return ENTITY_INIT_ERROR;
 				} 
-				this->entities[EntityId] = new T();
-				this->entities[EntityId]->setId(EntityId);
+				this->entities[EntityId] = new T(EntityId);
+				//this->entities[EntityId]->setId(EntityId);
 
 				return this->entities[EntityId++]->getId();
 			}
 
-			template <class T>
-			void removeEntity(T identity){
-				if(std::is_class<T>::value){
-					
+			
+			ECS::Entity* removeEntity(int ID){
+				std::unordered_map<int, ECS::Entity*>::const_iterator got = this->entities.find(ID);
+
+				if ( got == this->entities.end() ) {
+					printf("[ERROR] Entity not found.\n");
 				}
+
+				return got->second;
 			}
 
 

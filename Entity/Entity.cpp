@@ -1,13 +1,7 @@
 #include "Entity.hpp"
 #include <string>
 
-ECS::Entity::Entity(){
-	this->id = 0;
-}
 
-void ECS::Entity::addComponent(Component component){
-	this->components.push_back(component);
-}
 
 /*
 template <typename T>

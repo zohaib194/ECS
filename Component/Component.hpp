@@ -8,7 +8,6 @@ namespace ECS{
 				
 			}
 			Component(std::string name);
-			virtual void execute();
 			std::string getComponentName();
 		private:
 			std::string name;

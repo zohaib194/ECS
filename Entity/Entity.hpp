@@ -8,7 +8,9 @@ namespace ECS{
 		public:
 			int id;
 
-			Entity();
+			Entity(int ID){
+				this->id = ID;
+			}
 			//~Entity();
 			
 			
@@ -16,13 +18,15 @@ namespace ECS{
 				this->id = id;
 			}
 
-			int getId(){
+			inline const int getId() const {
 				return this->id;
 			}
 
 
 
-			virtual void addComponent(Component component);
+			inline void addComponent(Component component){
+				this->components.push_back(component);
+			}
 
 
 			template <typename T>
@@ -34,6 +38,12 @@ namespace ECS{
 				}
 			}
 
+
+			inline const int getNrOfComponents() const {
+				return this->components.size(); 
+			}
+
+			 virtual ~Entity() = default;
 
 
 		private:
