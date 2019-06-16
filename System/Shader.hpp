@@ -7,7 +7,7 @@
 /**
  * @brief Container for classes and structures associated with modeling consepts. 
  */
-namespace modeler{
+namespace ECS{
       /**
        * @brief Represent a GL shader program
        */

@@ -2,13 +2,14 @@
 #ifndef SYSTEMMANAGER_H
 #define SYSTEMMANAGER_H
 #include "System.hpp"
+#include "RenderMeshSystem.hpp"
 
 #include <iostream>
 #include <unordered_map> 
 #include <type_traits>
+#include <typeinfo>   // operator typeid
 
 extern unsigned int SystemId;
-
 
 namespace ECS {
 
@@ -16,17 +17,23 @@ namespace ECS {
 		public:
 
 			SystemManager(){
-
 			}
 
 			template <class T>
-			void activateSystem(){
+			void activateSystem(std::string vertPath, std::string fragPath){
 				if(!std::is_base_of<ECS::System, T>::value){
 					printf("[ERROR] Given system is not derived from class System\n");
 					return;
 				}
 
-				this->systems[SystemId] = new T();
+				//if(typeid(ECS::RenderMeshSystem) == typeid(T) && vertPath == "" && fragPath == ""){
+					this->systems[SystemId] = new T(vertPath, fragPath);
+
+				/*} else {
+					this->systems[SystemId] = new T();
+
+				}*/
+
 				SystemId++;
 			}
 
@@ -35,6 +42,7 @@ namespace ECS {
 					system.second->update(dt);
 				}
 			}
+
 		private:
 			std::unordered_map<int, ECS::System*> systems;
 	};

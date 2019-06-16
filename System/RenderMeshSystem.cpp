@@ -1,45 +1,85 @@
 #include "RenderMeshSystem.hpp"
 #include "../Component/MeshComponent.hpp"
 //#include "../Component/structs.hpp"
-
+#include "GL/glew.h"
 void ECS::RenderMeshSystem::createVAOVBO() {
-	// create buffers/arrays
-/*	glGenVertexArrays(1, &this->VAO);
-	glGenBuffers(1, &this->VBO);
-	glGenBuffers(1, &this->EBO);
+	std::vector<unsigned int> entitiesID = entityManager->getAllEntitiesIDByComponent<ECS::MeshComponent>();
+	unsigned int VAO, VBO, EBO;
+	for(auto ID : entitiesID){
 
-	glBindVertexArray(this->VAO);
-	// load data into vertex buffers
-	glBindBuffer(GL_ARRAY_BUFFER, this->VBO);
-	// A great thing about structs is that their memory layout is sequential for all its items.
-	// The effect is that we can simply pass a pointer to the struct and it translates perfectly to a glm::vec3/2 array which
-	// again translates to 3/2 floats which translates to a byte array.
-	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), &vertices[0], GL_STATIC_DRAW);
+		// create buffers/arrays
+		glGenVertexArrays(1, &VAO);
+		this->VAOS.push_back(VAO);
+		MeshComponent* mesh = entityManager->getComponentByEntityID<ECS::MeshComponent*>(ID);
+		
 
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->EBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), &indices[0], GL_STATIC_DRAW);
+		glGenBuffers(1, &VBO);
+		this->VBOS.push_back(VBO);
+		glGenBuffers(1, &EBO);
+		this->EBOS.push_back(EBO);
 
-	// set the vertex attribute pointers
-	// vertex Positions
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
-	// vertex normals
-	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Normal));
-	// vertex texture coords
-	glEnableVertexAttribArray(2);
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, TexCoords));
-	// vertex tangent
-	glEnableVertexAttribArray(3);
-	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Tangent));
-	// vertex bitangent
-	glEnableVertexAttribArray(4);
-	glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Bitangent));
+		registeredEntities.push_back(std::make_pair(std::make_tuple(VAO, VBO, EBO), ID));
+		glBindVertexArray(VAO);
+		// load data into vertex buffers
+		glBindBuffer(GL_ARRAY_BUFFER, VBO);
 
-	glBindVertexArray(0);*/
+		// A great thing about structs is that their memory layout is sequential for all its items.
+		// The effect is that we can simply pass a pointer to the struct and it translates perfectly to a glm::vec3/2 array which
+		// again translates to 3/2 floats which translates to a byte array.
+		glBufferData(GL_ARRAY_BUFFER, mesh->getVertices().size() * sizeof(ECS::Vertex), &mesh->getVertices()[0], GL_STATIC_DRAW);
+		
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, mesh->getIndices().size() * sizeof(unsigned int), &mesh->getIndices()[0], GL_STATIC_DRAW);
+	
+		// set the vertex attribute pointers
+		// vertex Positions
+		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(ECS::Vertex), (void*)0);
+	//	// vertex normals
+	//	glEnableVertexAttribArray(1);
+	//	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Normal));
+	//	// vertex texture coords
+	//	glEnableVertexAttribArray(2);
+	//	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, TexCoords));
+	//	// vertex tangent
+	//	glEnableVertexAttribArray(3);
+	//	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Tangent));
+	//	// vertex bitangent
+	//	glEnableVertexAttribArray(4);
+	//	glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Bitangent));
+	
+		glBindVertexArray(0);
+	}
 }
 
 void ECS::RenderMeshSystem::update(float dt) {
-	printf("Hello from RenderMeshSystem, %i\n", entityManager->getAllEntitiesByComponent<MeshComponent>().size());
+	std::vector<unsigned int> entitiesID = entityManager->getAllEntitiesIDByComponent<ECS::MeshComponent>();
 
+	for(auto ID : entitiesID){
+		//MeshComponent* mesh = entityManager->getComponentByEntityID<ECS::MeshComponent*>(ID);
+	}
+
+	this->draw();
 };
+
+void ECS::RenderMeshSystem::draw(){
+	//std::vector<unsigned int> entitiesID = entityManager->getAllEntitiesIDByComponent<ECS::MeshComponent>();
+
+	for(auto entityData : this->registeredEntities){
+		MeshComponent* mesh = entityManager->getComponentByEntityID<ECS::MeshComponent*>(entityData.second);
+
+		glBindVertexArray(std::get<0>(entityData.first));
+		glBindBuffer(GL_ARRAY_BUFFER, std::get<1>(entityData.first));
+
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, std::get<2>(entityData.first));
+
+		printf("%i, %i, %i, %i \n", std::get<0>(entityData.first), std::get<1>(entityData.first), std::get<2>(entityData.first), entityData.second);
+		glDrawElements(GL_TRIANGLES, mesh->getIndices().size(), GL_UNSIGNED_INT, 0);
+
+
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+		glBindVertexArray(0);
+	}
+}

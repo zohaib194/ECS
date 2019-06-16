@@ -69,6 +69,8 @@ add_executable(${projectname}
 	${PROJECT_SOURCE_DIR}/System/System.cpp
 	${PROJECT_SOURCE_DIR}/System/SystemManager.cpp
 	${PROJECT_SOURCE_DIR}/System/RenderMeshSystem.cpp
+	${PROJECT_SOURCE_DIR}/System/Shader.cpp
+	${PROJECT_SOURCE_DIR}/System/ShaderManager.cpp
 #	#imgui
 #	${PROJECT_SOURCE_DIR}/source/imgui/imgui.cpp
 #	${PROJECT_SOURCE_DIR}/source/imgui/imgui_impl_glfw_gl3.cpp

@@ -36,7 +36,7 @@ namespace ECS{
 			}
 
 			template <class T>
-			std::vector<unsigned int> getAllEntitiesByComponent(){
+			std::vector<unsigned int> getAllEntitiesIDByComponent(){
 				std::vector<unsigned int> entitiesFound;
 				int entityID = 0;
 				for(auto &entity : this->entities){
@@ -48,6 +48,12 @@ namespace ECS{
 				}
 
 				return entitiesFound;
+			}
+
+
+			template <class T>
+			T getComponentByEntityID(unsigned int id){
+				return this->entities[id]->getComponent<T>();
 			}
 
 			ECS::Entity* removeEntity(int ID);

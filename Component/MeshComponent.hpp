@@ -27,6 +27,18 @@ namespace ECS {
 			}
 
 			//void execute();
+
+			std::vector<ECS::Vertex> getVertices(){
+				return this->vertices;
+			}
+
+			std::vector<unsigned int> getIndices(){
+				return this->indices;
+			}
+
+			std::vector<ECS::Texture> getTextures(){
+				return this->textures;
+			}
 	};
 
 }

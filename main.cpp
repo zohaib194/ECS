@@ -12,6 +12,7 @@
 
 ECS::EntityManager* entityManager;
 ECS::SystemManager* systemManager;
+ECS::ShaderManager* shaderManager;
 
 GLFWwindow* glfw_setup() {
 
@@ -79,6 +80,17 @@ class PlayerEntity : public ECS::Entity{
 		}
 };
 
+class EnemyEntity : public ECS::Entity{
+	public:
+		EnemyEntity(int ID) : ECS::Entity(ID){
+
+		}
+
+		void printPlayerEntity(){
+			std::cout << "call from PlayerEntity\n";
+		}
+};
+
 
 #include <vector>
 
@@ -88,22 +100,25 @@ int main(){
 
 	entityManager = new ECS::EntityManager();
 	systemManager = new ECS::SystemManager();
+	shaderManager = new ECS::ShaderManager();
 
 	int i = entityManager->createEntity<PlayerEntity>();
+	int j = entityManager->createEntity<EnemyEntity>();
 	if(i != -1){
 		std::cout << "Entity created: " << i << "\n";
 	}
 
 	PlayerEntity* player = dynamic_cast<PlayerEntity*>(entityManager->removeEntity(i));
+	EnemyEntity* enemy = dynamic_cast<EnemyEntity*>(entityManager->removeEntity(j));
 
 	//player->printTestEntity();
 	std::vector<ECS::Vertex> vertices;
 	ECS::Vertex vertex;
-	vertex.position = glm::vec3(-0.5f, -0.5f, 0.0f);
+	vertex.position = glm::vec3(0.0f, -0.5f, 0.0f);
 	vertices.push_back(vertex);
-	vertex.position = glm::vec3(0.5f, -0.5f, 0.0f);
+	vertex.position = glm::vec3(0.5f, 0.0f, 0.0f);
 	vertices.push_back(vertex);
-	vertex.position = glm::vec3(0.0f,  0.5f, 0.0f);
+	vertex.position = glm::vec3(1.0f,  -0.5f, 0.0f);
 	vertices.push_back(vertex);
 
 	std::vector<unsigned int> indices = {
@@ -111,12 +126,32 @@ int main(){
 	};
 
 	ECS::MeshComponent* mesh = new ECS::MeshComponent("Triangle", vertices, indices);
-	//TriangleComponent triangleComponent("Box");
-	//	triangleComponent.fillMesh(glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec4(0.0f, 1.0f, 1.0f, 0.0f));
-
 	player->addComponent(mesh);
 
-	systemManager->activateSystem<ECS::RenderMeshSystem>();
+	vertices.clear();
+	indices.clear();
+
+	vertex.position = glm::vec3(0.0f, 1.0f, 0.0f);
+	vertices.push_back(vertex);
+	vertex.position = glm::vec3(-1.0f, 1.0f, 0.0f);
+	vertices.push_back(vertex);
+	vertex.position = glm::vec3(0.0f,  0.0f, 0.0f);
+	vertices.push_back(vertex);
+	vertex.position = glm::vec3(-1.0f,  0.0f, 0.0f);
+	vertices.push_back(vertex);
+
+	indices = {
+		0, 1, 2,
+		2, 1, 3
+	};
+
+
+	ECS::MeshComponent* mesh1 = new ECS::MeshComponent("Triangle", vertices, indices);
+
+	enemy->addComponent(mesh1);
+
+	// Activate render system once all the mesh components are added on entities.
+	systemManager->activateSystem<ECS::RenderMeshSystem>("/home/zohaib/Documents/ECS/shader/vertex.vert", "/home/zohaib/Documents/ECS/shader/fragment.frag");
 
 	//printf("Nr of components in player entity: %i\n", entityManager->getNrOfComponentForPlayer(i));
 	while(!glfwWindowShouldClose(window))

@@ -3,15 +3,15 @@
 #include <functional>
 #include <algorithm>
 
-modeler::ShaderManager::ShaderManager(){
+ECS::ShaderManager::ShaderManager(){
 
 }
 
-modeler::ShaderManager::~ShaderManager(){
+ECS::ShaderManager::~ShaderManager(){
 	//TODO: Delete all shaders.
 }
 
-modeler::Shader* modeler::ShaderManager::getShader(std::vector<std::pair<GLenum, std::string>> shaders){
+ECS::Shader* ECS::ShaderManager::getShader(std::vector<std::pair<GLenum, std::string>> shaders){
 	
 	std::string shaderName;										//Concatination of all shader paths
 	

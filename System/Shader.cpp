@@ -5,10 +5,10 @@
 #include <iostream>
 #include <fstream>
 
- GLuint modeler::Shader::id() const {
+ GLuint ECS::Shader::id() const {
  	return shaderProgram; 
  }
-modeler::Shader::Shader(const std::string path_vert_shader, const std::string path_frag_shader){
+ECS::Shader::Shader(const std::string path_vert_shader, const std::string path_frag_shader){
 
     /*-----------------------------------------------------------------------------
      *  CREATE THE SHADER
@@ -34,7 +34,7 @@ modeler::Shader::Shader(const std::string path_vert_shader, const std::string pa
 	glUseProgram(shaderProgram);
 }
 
-modeler::Shader::Shader(std::vector<std::pair<GLenum, std::string>> shaders){
+ECS::Shader::Shader(std::vector<std::pair<GLenum, std::string>> shaders){
 	// shaderTypes that can be attatched
 	std::vector<GLenum> available = {GL_VERTEX_SHADER, GL_TESS_CONTROL_SHADER, GL_TESS_EVALUATION_SHADER, GL_GEOMETRY_SHADER, GL_FRAGMENT_SHADER};
 
@@ -63,15 +63,15 @@ modeler::Shader::Shader(std::vector<std::pair<GLenum, std::string>> shaders){
 	glUseProgram(shaderProgram);
 }
 
-void modeler::Shader::bind(){ 
+void ECS::Shader::bind(){ 
 	glUseProgram(shaderProgram); 
 }
 
-void modeler::Shader::unbind() { 
+void ECS::Shader::unbind() { 
 	glUseProgram(0); 
 }
 
-GLuint modeler::Shader::load_and_compile_shader(const std::string fname, GLenum shaderType) 
+GLuint ECS::Shader::load_and_compile_shader(const std::string fname, GLenum shaderType) 
 {
 	// Load a shader from an external file
 	std::vector<char> buffer;
@@ -97,7 +97,7 @@ GLuint modeler::Shader::load_and_compile_shader(const std::string fname, GLenum 
 	return shader;
 }
 
-void modeler::Shader::read_shader_src(const std::string fname, std::vector<char> &buffer)
+void ECS::Shader::read_shader_src(const std::string fname, std::vector<char> &buffer)
 {
 	std::ifstream in;
 	in.open(fname, std::ios::binary);
@@ -126,7 +126,7 @@ void modeler::Shader::read_shader_src(const std::string fname, std::vector<char>
 	}
 }
 
-std::map<std::string, GLuint> modeler::Shader::getUniform(std::map<std::string, std::string> request){
+std::map<std::string, GLuint> ECS::Shader::getUniform(std::map<std::string, std::string> request){
 	
 	std::map<std::string, GLuint> result;
 	

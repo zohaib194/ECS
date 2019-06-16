@@ -36,12 +36,15 @@ namespace ECS{
 
 
 			template <typename T>
-			T* getComponent(std::string name){
-				for(auto c : this->components){
-					if(c->getComponentName() == name){
-						return c;
+			T getComponent(){
+				for(auto &comp : this->components){
+					T component = dynamic_cast<T>(comp);
+					if(component != nullptr){
+
+						return component;
 					}
 				}
+				return nullptr;
 			}
 
 			template <class T>
