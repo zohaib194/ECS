@@ -1,7 +1,13 @@
-#include <vector>
+#pragma once 
+#ifndef MESHCOMPONENT_H
+#define MESHCOMPONENT_H
+
 #include "Component.hpp"
 #include "structs.hpp"
 #include "libs/glm/glm/glm.hpp"
+
+#include <vector>
+
 
 namespace ECS {
 
@@ -24,3 +30,4 @@ namespace ECS {
 	};
 
 }
+#endif

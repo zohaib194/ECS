@@ -1,7 +1,13 @@
 #pragma once 
 
+
+#ifndef ENTITY_H
+#define ENTITY_H
+
 #include "../Component/Component.hpp"
+
 #include <vector>
+#include <type_traits>
 
 namespace ECS{
 	class Entity{
@@ -24,30 +30,42 @@ namespace ECS{
 
 
 
-			inline void addComponent(Component component){
+			inline void addComponent(Component* component){
 				this->components.push_back(component);
 			}
 
 
 			template <typename T>
-			T getComponent(std::string name){
+			T* getComponent(std::string name){
 				for(auto c : this->components){
-					if(c.getComponentName() == name){
+					if(c->getComponentName() == name){
 						return c;
 					}
 				}
 			}
 
+			template <class T>
+			int getEntityIDByComponent(){
+				for(auto &comp : this->components){
+					T* temp = dynamic_cast<T*>(comp);
+					if(temp != nullptr){
+
+						return this->id;
+					}
+				}
+				return -1;
+			}
 
 			inline const int getNrOfComponents() const {
 				return this->components.size(); 
 			}
 
-			 virtual ~Entity() = default;
+			virtual ~Entity() = default;
 
 
 		private:
-			std::vector<Component> components;
+			std::vector<Component*> components;
 
 	};
 }
+#endif

@@ -63,8 +63,12 @@ add_executable(${projectname}
 	#ECS
 	${PROJECT_SOURCE_DIR}/Entity/Entity.cpp
 	${PROJECT_SOURCE_DIR}/Entity/EntityManager.cpp
+	
 	${PROJECT_SOURCE_DIR}/Component/Component.cpp
-	${PROJECT_SOURCE_DIR}/Component/MeshComponent.cpp
+
+	${PROJECT_SOURCE_DIR}/System/System.cpp
+	${PROJECT_SOURCE_DIR}/System/SystemManager.cpp
+	${PROJECT_SOURCE_DIR}/System/RenderMeshSystem.cpp
 #	#imgui
 #	${PROJECT_SOURCE_DIR}/source/imgui/imgui.cpp
 #	${PROJECT_SOURCE_DIR}/source/imgui/imgui_impl_glfw_gl3.cpp
@@ -101,6 +105,11 @@ endif(WINDOWS)
 
 
 include_directories(${PROJECT_SOURCE_DIR}/)
+include_directories(${PROJECT_SOURCE_DIR}/Component/)
+include_directories(${PROJECT_SOURCE_DIR}/Entity/)
+include_directories(${PROJECT_SOURCE_DIR}/helpers/)
+include_directories(${PROJECT_SOURCE_DIR}/System/)
+include_directories(${PROJECT_SOURCE_DIR}/libs/)
 include_directories(${PROJECT_SOURCE_DIR}/libs/glfw/include/)
 include_directories(${PROJECT_SOURCE_DIR}/libs/soil/src/)
 include_directories(${PROJECT_SOURCE_DIR}/libs/glm/)

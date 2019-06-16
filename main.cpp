@@ -1,12 +1,17 @@
+#include "Component/MeshComponent.hpp"
 #include "Entity/EntityManager.hpp"
-#include "Component/MeshComponent.cpp"
+#include "System/RenderMeshSystem.hpp"
+#include "System/System.hpp"
+#include "System/SystemManager.hpp"
+#include "helpers/globals.hpp"
 #include <iostream>
 #include "GL/glew.h"
 #include "GLFW/glfw3.h"
 
 #include <stdio.h>
 
-ECS::EntityManager *entityManager;
+ECS::EntityManager* entityManager;
+ECS::SystemManager* systemManager;
 
 GLFWwindow* glfw_setup() {
 
@@ -82,6 +87,7 @@ int main(){
 
 
 	entityManager = new ECS::EntityManager();
+	systemManager = new ECS::SystemManager();
 
 	int i = entityManager->createEntity<PlayerEntity>();
 	if(i != -1){
@@ -104,17 +110,22 @@ int main(){
 		0, 1, 2
 	};
 
-	ECS::MeshComponent mesh = ECS::MeshComponent("Triangle", vertices, indices);
+	ECS::MeshComponent* mesh = new ECS::MeshComponent("Triangle", vertices, indices);
 	//TriangleComponent triangleComponent("Box");
 	//	triangleComponent.fillMesh(glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec4(0.0f, 1.0f, 1.0f, 0.0f));
 
 	player->addComponent(mesh);
-	printf("Nr of components in player entity: %i\n", player->getNrOfComponents());
+
+	systemManager->activateSystem<ECS::RenderMeshSystem>();
+
+	//printf("Nr of components in player entity: %i\n", entityManager->getNrOfComponentForPlayer(i));
 	while(!glfwWindowShouldClose(window))
 	{
 		// Clearing screen for next draw
 		glClearColor(0.4, 0.8, 0.8, 1);
 		glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		systemManager->update(1.0f);
 
 		glfwSwapBuffers(window);    // SWAP BUFFERS
         glfwPollEvents();           // LISTEN FOR WINDOW EVENTS
