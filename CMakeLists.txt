@@ -1,6 +1,6 @@
 
 
-#CMAKE FOR GLFW GLEW 
+#CMAKE FOR GLFW GLEW
 cmake_minimum_required(VERSION 3.1)
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -22,7 +22,7 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
   SET( APPLE 0)
 elseif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
   SET( LINUX 0)
-  SET( APPLE 1 ) 
+  SET( APPLE 1 )
 elseif(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
   SET( WINDOWS 1)
 endif()
@@ -34,7 +34,7 @@ if(APPLE OR LINUX)
 find_package(GLEW REQUIRED)
 endif(APPLE OR LINUX)
 
-set( GLFW_BUILD_EXAMPLES OFF CACHE BOOL "turn off build examples") 
+set( GLFW_BUILD_EXAMPLES OFF CACHE BOOL "turn off build examples")
 add_subdirectory(libs/glfw)
 link_directories(${PROJECT_BINARY_DIR})
 link_directories(${GLFW_BINARY_DIR})
@@ -49,8 +49,10 @@ include_directories(${ASSIMP_INCLUDE_DIRS})
 
 
 if(WINDOWS)
+#add_subdirectory(libs/glew/include/)
 link_directories(${PROJECT_SOURCE_DIR}/libs/glew/lib/)
-add_subdirectory(ASSIMP)
+link_directories(${PROJECT_BINARY_DIR})
+link_directories(${PROJECT_SOURCE_DIR}/libs/assimp/include/)
 link_directories(${PROJECT_BINARY_DIR})
 link_directories(${ASSIMP_BINARY_DIR})
 endif(WINDOWS)
@@ -58,12 +60,12 @@ endif(WINDOWS)
 
 add_executable(${projectname}
 	#src
-	${PROJECT_SOURCE_DIR}/main.cpp 
+	${PROJECT_SOURCE_DIR}/main.cpp
 
 	#ECS
 	${PROJECT_SOURCE_DIR}/Entity/Entity.cpp
 	${PROJECT_SOURCE_DIR}/Entity/EntityManager.cpp
-	
+
 	${PROJECT_SOURCE_DIR}/Component/Component.cpp
 
 	${PROJECT_SOURCE_DIR}/System/System.cpp
@@ -88,7 +90,7 @@ add_executable(${projectname}
 #	${PROJECT_SOURCE_DIR}/source/helpers/errorHandler.cpp
 #	${PROJECT_SOURCE_DIR}/source/helpers/glfw_setup.cpp
 #	${PROJECT_SOURCE_DIR}/source/helpers/global_function.cpp
-#	
+#
 #	#modeler
 #	${PROJECT_SOURCE_DIR}/source/modeler/Mesh.cpp
 #	${PROJECT_SOURCE_DIR}/source/modeler/Model.cpp
@@ -99,9 +101,9 @@ add_executable(${projectname}
 )
 #add_executable(${projectname} ${srcfile} )
 if(WINDOWS)
-	target_link_libraries(${projectname} glfw glew32 SOIL assimp ${GLFW_LIBRARIES}  ${SOIL_LIBRARIES} ${ASSIMP_LIBRARIES} ) 
+	target_link_libraries(${projectname} glfw glew32 SOIL assimp ${GLFW_LIBRARIES}  ${SOIL_LIBRARIES} ${ASSIMP_LIBRARIES} )
 else()
-	target_link_libraries(${projectname} glfw SOIL assimp ${GLEW_LIBRARY} ${GLFW_LIBRARIES}  ${SOIL_LIBRARIES} ${ASSIMP_LIBRARIES}) 
+	target_link_libraries(${projectname} glfw SOIL assimp ${GLEW_LIBRARY} ${GLFW_LIBRARIES}  ${SOIL_LIBRARIES} ${ASSIMP_LIBRARIES})
 endif(WINDOWS)
 
 
@@ -125,6 +127,7 @@ if(WINDOWS)
 include_directories(${PROJECT_SOURCE_DIR}/libs/glew/include/)
 
 file(COPY  ${PROJECT_SOURCE_DIR}/libs/dll/glew32.dll DESTINATION ${PROJECT_BINARY_DIR})
+file(COPY  ${PROJECT_SOURCE_DIR}/libs/dll/assimp.dll DESTINATION ${PROJECT_BINARY_DIR})
 endif(WINDOWS)
 
 if(APPLE)

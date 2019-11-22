@@ -5,7 +5,7 @@
 #include "RenderMeshSystem.hpp"
 
 #include <iostream>
-#include <unordered_map> 
+#include <unordered_map>
 #include <type_traits>
 #include <typeinfo>   // operator typeid
 
@@ -26,15 +26,16 @@ namespace ECS {
 					return;
 				}
 
-				//if(typeid(ECS::RenderMeshSystem) == typeid(T) && vertPath == "" && fragPath == ""){
+				if(typeid(ECS::RenderMeshSystem) == typeid(T) && vertPath != "" && fragPath != ""){
 					this->systems[SystemId] = new T(vertPath, fragPath);
+					SystemId++;
 
-				/*} else {
+				}/* else {
 					this->systems[SystemId] = new T();
+					SystemId++;
 
 				}*/
 
-				SystemId++;
 			}
 
 			void update(float dt){

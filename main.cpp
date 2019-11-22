@@ -1,11 +1,16 @@
 #include "Component/MeshComponent.hpp"
+#include "Component/ModelComponent.hpp"
 #include "Entity/EntityManager.hpp"
 #include "System/RenderMeshSystem.hpp"
 #include "System/System.hpp"
 #include "System/SystemManager.hpp"
 #include "helpers/globals.hpp"
 #include <iostream>
+#ifdef __unix__
+#include <GL/glew.h>
+#elif defined(_WIN32) || defined(WIN32)
 #include "GL/glew.h"
+#endif
 #include "GLFW/glfw3.h"
 
 #include <stdio.h>
@@ -54,10 +59,10 @@ GLFWwindow* glfw_setup() {
         glfwTerminate();
     }
 
-	glEnable(GL_DEPTH_TEST);  
+	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
 	glEnable(GL_BLEND);
-	glLineWidth(3); 
+	glLineWidth(3);
 
 	// Error handeling
 	glEnable( GL_DEBUG_OUTPUT );
@@ -127,7 +132,6 @@ int main(){
 
 	ECS::MeshComponent* mesh = new ECS::MeshComponent("Triangle", vertices, indices);
 	player->addComponent(mesh);
-
 	vertices.clear();
 	indices.clear();
 
@@ -150,8 +154,12 @@ int main(){
 
 	enemy->addComponent(mesh1);
 
+	//enemy->addComponent(new ECS::ModelComponent("PLAYER_MODEL", "./Game/Assets/modell_chessBoard.obj"));
+
+	//ECS::ModelComponent* model = entityManager->getComponentByEntityID<ECS::ModelComponent*>(j);
+
 	// Activate render system once all the mesh components are added on entities.
-	systemManager->activateSystem<ECS::RenderMeshSystem>("/home/zohaib/Documents/ECS/shader/vertex.vert", "/home/zohaib/Documents/ECS/shader/fragment.frag");
+	systemManager->activateSystem<ECS::RenderMeshSystem>("C:/Users/DZ359/Desktop/code/ECS/shader/vertex.vert", "C:/Users/DZ359/Desktop/code/ECS/shader/fragment.frag");
 
 	//printf("Nr of components in player entity: %i\n", entityManager->getNrOfComponentForPlayer(i));
 	while(!glfwWindowShouldClose(window))
