@@ -27,10 +27,12 @@ Framework and Game should at minimum have following functionalities:
 
 - Install chocolatey
 	- Open powershell
-	- Run this commanad: ```Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))```
+	- Run the following commanad:
+	    - ```Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))```
 	- Close powershell
 - Open Git bash:
 	- ```choco install cmake 3.15.5```
+	- ```choco install mingw 8.1.0```
 	- ```choco install make 4.2.1```
 	- ```git clone https://github.com/zohaib194/ECS.git```
 	- navigate to the ECS directory
