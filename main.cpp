@@ -7,17 +7,22 @@
 #include "helpers/globals.hpp"
 #include <iostream>
 #ifdef __unix__
-#include <GL/glew.h>
+	#include <GL/glew.h>
+    #include <unistd.h>
 #elif defined(_WIN32) || defined(WIN32)
-#include "GL/glew.h"
+	#include "GL/glew.h"
+    #include <direct.h>
+    #define getcwd _getcwd
 #endif
 #include "GLFW/glfw3.h"
 
 #include <stdio.h>
 
+
 ECS::EntityManager* entityManager;
 ECS::SystemManager* systemManager;
 ECS::ShaderManager* shaderManager;
+const int MAX_PATH = 200;
 
 GLFWwindow* glfw_setup() {
 
@@ -69,6 +74,17 @@ GLFWwindow* glfw_setup() {
 	//glDebugMessageCallback( (GLDEBUGPROC) gl_errorCallback, 0 );
 
     return window;
+}
+
+
+std::string getProjectPath(){
+	char buffer[MAX_PATH];
+	char *answer = getcwd(buffer, sizeof(buffer));
+	std::string s_cwd;
+	if (answer) {
+	    s_cwd = answer;
+	}
+	return s_cwd.substr(0, s_cwd.find("ECS/", 0) + 4);
 }
 
 
@@ -154,12 +170,15 @@ int main(){
 
 	enemy->addComponent(mesh1);
 
+	// Get the project path.
+	std::string projectPath = getProjectPath();
+
 	//enemy->addComponent(new ECS::ModelComponent("PLAYER_MODEL", "./Game/Assets/modell_chessBoard.obj"));
 
 	//ECS::ModelComponent* model = entityManager->getComponentByEntityID<ECS::ModelComponent*>(j);
 
 	// Activate render system once all the mesh components are added on entities.
-	systemManager->activateSystem<ECS::RenderMeshSystem>("C:/Users/DZ359/Desktop/code/ECS/shader/vertex.vert", "C:/Users/DZ359/Desktop/code/ECS/shader/fragment.frag");
+	systemManager->activateSystem<ECS::RenderMeshSystem>(projectPath + "shader/vertex.vert", projectPath + "shader/fragment.frag");
 
 	//printf("Nr of components in player entity: %i\n", entityManager->getNrOfComponentForPlayer(i));
 	while(!glfwWindowShouldClose(window))
@@ -182,6 +201,3 @@ int main(){
 
 	return 0;
 }
-
-
-

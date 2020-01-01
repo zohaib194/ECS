@@ -103,7 +103,7 @@ add_executable(${projectname}
 if(WINDOWS)
 	target_link_libraries(${projectname} glfw glew32 SOIL assimp ${GLFW_LIBRARIES}  ${SOIL_LIBRARIES} ${ASSIMP_LIBRARIES} )
 else()
-	target_link_libraries(${projectname} glfw SOIL assimp ${GLEW_LIBRARY} ${GLFW_LIBRARIES}  ${SOIL_LIBRARIES} ${ASSIMP_LIBRARIES})
+	target_link_libraries(${projectname} glfw SOIL assimp ${GLEW_LIBRARIES} ${GLFW_LIBRARIES}  ${SOIL_LIBRARIES} ${ASSIMP_LIBRARIES})
 endif(WINDOWS)
 
 
