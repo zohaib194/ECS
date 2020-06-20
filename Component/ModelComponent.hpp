@@ -62,6 +62,10 @@ namespace ECS {
 			bool isGammaCorrection(){
 				return this->gammaCorrection;
 			}
+
+			void addMesh(MeshComponent mesh) {
+				meshes.push_back(mesh);
+			}
 	};
 
 }

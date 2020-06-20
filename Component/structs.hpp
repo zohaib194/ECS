@@ -4,8 +4,10 @@ namespace ECS {
 
 	struct Vertex {
 		glm::vec3 position;
-	    //glm::vec3 Normal;
-	    //glm::vec2 TexCoords;
+	    glm::vec3 normal;
+	    glm::vec2 texCoords;
+	    glm::vec3 tangent;		//!< Information usefull for lighting.	
+		glm::vec3 bitangent;	//!< Information usefull for defining curves.
 	};
 
 

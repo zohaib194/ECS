@@ -4,16 +4,22 @@
 
 
 #include "System.hpp"
-#include "../Entity/EntityManager.hpp"
-
 #include <string>
 #include <vector>
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
+#include "SOIL.h"
+#include <GL/glew.h>
 
+#include "../Component/MeshComponent.hpp"
+#include "../Component/ModelComponent.hpp"
+#include "../Entity/EntityManager.hpp"
+#include "../System/ShaderManager.hpp"
 
 extern ECS::EntityManager *entityManager;
+extern ECS::ShaderManager *shaderManager;
+
 /**
  * @@brief Container for classes and structures associated with modeling consepts.
  */
@@ -23,18 +29,36 @@ namespace ECS{
      * @details Includes informationon has about filelocation of model
      * and if gamma correction has been applied.
      */
-    class ModelSystem : : public ECS::System
+    class ModelSystem : public ECS::System
     {
         public:
 
-            ModelSystem();
+            ModelSystem(std::string vertPath, std::string fragPath){
+                shaderProgram = shaderManager->getShader(std::vector<std::pair<GLenum, std::string>>{
+                    {GL_VERTEX_SHADER, vertPath},
+                    {GL_FRAGMENT_SHADER, fragPath},
+                });
+
+                // Get all entities with model component.
+                std::vector<unsigned int> entitiesID = entityManager->getAllEntitiesIDByComponent<ECS::ModelComponent>();
+
+                for(unsigned int ID: entitiesID) {
+                    if(std::find(this->registeredEntities.begin(), this->registeredEntities.end(), ID) != this->registeredEntities.end()) {
+                        
+                        // Load the model to the entity modelcomponent
+                        loadModel(entityManager->getComponentByEntityID<ECS::ModelComponent*>(ID));
+                        this->registeredEntities.push_back(ID);
+                    }
+                    // TODO: Reassign the loaded model.
+                }
+            };
 
             /**
              * @brief Loads the model from the given path.
              * @param path Path to the model to be loaded.
              * @param gamma Optional to indicate if the gammacorrection has already been applied.
              */
-            ModelSystem(std::string const &path, bool gamma = false);
+            //ModelSystem(std::string const &path, bool gamma = false);
 
             /**
              * @brief Draws the model to the screen.
@@ -51,7 +75,7 @@ namespace ECS{
              *
              * @param path The filepath to the Model file.
              */
-            void loadModel(std::string const &path);
+            void loadModel(ModelComponent *model);
 
             /**
              * @brief Converts assimp mesh to proprietary mesh
@@ -61,7 +85,7 @@ namespace ECS{
              *
              * @return Proprietary mesh.
              */
-        	Mesh processMesh(aiMesh *mesh, const aiScene *scene);
+        	ECS::MeshComponent processMesh(aiMesh *mesh, const aiScene *scene, ModelComponent *model);
 
             /**
              * @brief Adds each mesh conected with the node to meshes.
@@ -69,7 +93,7 @@ namespace ECS{
              * @param node Assimp Node of the scene to be processed.
              * @param scene Assimp scene containing the node.
              */
-            void processNode(aiNode *node, const aiScene *scene);
+            void processNode(aiNode *node, const aiScene *scene, ModelComponent *model);
             // checks all material textures of a given type and loads the textures if they're not loaded yet.
             // the required info is returned as a Texture struct.
 
@@ -81,12 +105,16 @@ namespace ECS{
              * @param typeName Name of type for the return textureA.
              * @return Vector of textures associated with the material.
              */
-            std::vector<TextureA> loadMaterialTextures(aiMaterial *mat, aiTextureType type, std::string typeName);
+            std::vector<TextureA> loadMaterialTextures(aiMaterial *mat, ModelComponent *model, aiTextureType type, std::string typeName);
 
+
+            GLuint genTexture(const char* filename);
             /**
              * <External ID, Entity ID>.
              */
             std::vector<unsigned int> registeredEntities;
-
+            std::string directory;
+            ECS::Shader* shaderProgram;
     };
 }
+#endif

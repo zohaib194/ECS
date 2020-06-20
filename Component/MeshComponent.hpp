@@ -16,11 +16,14 @@ namespace ECS {
 			/*  Mesh Data  */
 	        std::vector<ECS::Vertex> vertices;
 	        std::vector<unsigned int> indices;
-	        std::vector<ECS::Texture> textures;
+	        std::vector<ECS::TextureA> textures;
 	        /*  Functions  */
 	        // void Draw(Shader shader);
 		public :
-			MeshComponent(std::string name, std::vector<ECS::Vertex> vertices, std::vector<unsigned int> indices/*, std::vector<ECS::Texture> textures */) : ECS::Component(name){
+			MeshComponent(std::string name, 
+				std::vector<ECS::Vertex> vertices, 
+				std::vector<unsigned int> indices, 
+				std::vector<ECS::TextureA> textures) : ECS::Component(name){
 				this->vertices = vertices;
 				this->indices = indices;
 				this->textures = textures;
@@ -36,7 +39,7 @@ namespace ECS {
 				return this->indices;
 			}
 
-			std::vector<ECS::Texture> getTextures(){
+			std::vector<ECS::TextureA> getTextures(){
 				return this->textures;
 			}
 	};

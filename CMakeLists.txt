@@ -39,22 +39,28 @@ add_subdirectory(libs/glfw)
 link_directories(${PROJECT_BINARY_DIR})
 link_directories(${GLFW_BINARY_DIR})
 
-add_subdirectory(libs/SOIL)
-link_directories(${PROJECT_BINARY_DIR})
-link_directories(${SOIL_BINARY_DIR})
 
 
 
+add_subdirectory(libs/assimp)
+set(ASSIMP_LIBRARY_DIRS ${PROJECT_SOURCE_DIR}libs/assimp/build/code)
+set(ASSIMP_INCLUDE_DIRS "lib/assimp/include" ${PROJECT_SOURCE_DIR}libs/assimp/build/include)
 include_directories(${ASSIMP_INCLUDE_DIRS})
+link_directories(${ASSIMP_LIBRARY_DIRS})
 
 
 if(WINDOWS)
 #add_subdirectory(libs/glew/include/)
 link_directories(${PROJECT_SOURCE_DIR}/libs/glew/lib/)
 link_directories(${PROJECT_BINARY_DIR})
-link_directories(${PROJECT_SOURCE_DIR}/libs/assimp/include/)
+
+#link_directories(${PROJECT_SOURCE_DIR}/libs/assimp/include/)
+#link_directories(${PROJECT_SOURCE_DIR}/libs/assimp/)
+#link_directories(${PROJECT_BINARY_DIR})
+
+add_subdirectory(libs/SOIL)
+link_directories(${PROJECT_SOURCE_DIR}/libs/SOIL/)
 link_directories(${PROJECT_BINARY_DIR})
-link_directories(${ASSIMP_BINARY_DIR})
 endif(WINDOWS)
 
 
@@ -70,6 +76,7 @@ add_executable(${projectname}
 
 	${PROJECT_SOURCE_DIR}/System/System.cpp
 	${PROJECT_SOURCE_DIR}/System/SystemManager.cpp
+	${PROJECT_SOURCE_DIR}/System/ModelSystem.cpp
 	${PROJECT_SOURCE_DIR}/System/RenderMeshSystem.cpp
 	${PROJECT_SOURCE_DIR}/System/Shader.cpp
 	${PROJECT_SOURCE_DIR}/System/ShaderManager.cpp

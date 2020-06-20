@@ -1,6 +1,7 @@
 #include "Component/MeshComponent.hpp"
 #include "Component/ModelComponent.hpp"
 #include "Entity/EntityManager.hpp"
+#include "System/ModelSystem.hpp"
 #include "System/RenderMeshSystem.hpp"
 #include "System/System.hpp"
 #include "System/SystemManager.hpp"
@@ -80,11 +81,11 @@ GLFWwindow* glfw_setup() {
 std::string getProjectPath(){
 	char buffer[MAX_PATH];
 	char *answer = getcwd(buffer, sizeof(buffer));
-	std::string s_cwd;
+	std::string cwd;
 	if (answer) {
-	    s_cwd = answer;
+	    cwd = answer;
 	}
-	return s_cwd.substr(0, s_cwd.find("ECS/", 0) + 4);
+	return cwd.substr(0, cwd.find("ECS", 0) + 4);
 }
 
 
@@ -116,6 +117,9 @@ class EnemyEntity : public ECS::Entity{
 #include <vector>
 
 int main(){
+	// Get the project path.
+	std::string projectPath = getProjectPath();
+
 	GLFWwindow* window = glfw_setup();
 
 
@@ -130,8 +134,8 @@ int main(){
 	}
 
 	PlayerEntity* player = dynamic_cast<PlayerEntity*>(entityManager->removeEntity(i));
-	EnemyEntity* enemy = dynamic_cast<EnemyEntity*>(entityManager->removeEntity(j));
-
+//	EnemyEntity* enemy = dynamic_cast<EnemyEntity*>(entityManager->removeEntity(j));
+/*
 	//player->printTestEntity();
 	std::vector<ECS::Vertex> vertices;
 	ECS::Vertex vertex;
@@ -170,15 +174,16 @@ int main(){
 
 	enemy->addComponent(mesh1);
 
-	// Get the project path.
-	std::string projectPath = getProjectPath();
+	
 
-	//enemy->addComponent(new ECS::ModelComponent("PLAYER_MODEL", "./Game/Assets/modell_chessBoard.obj"));
+*/
+	player->addComponent(new ECS::ModelComponent("PLAYER_MODEL", projectPath + "/Game/Assets/modell_chessBoard.obj"));
 
 	//ECS::ModelComponent* model = entityManager->getComponentByEntityID<ECS::ModelComponent*>(j);
 
 	// Activate render system once all the mesh components are added on entities.
 	systemManager->activateSystem<ECS::RenderMeshSystem>(projectPath + "shader/vertex.vert", projectPath + "shader/fragment.frag");
+	systemManager->activateSystem<ECS::ModelSystem>(projectPath + "shader/vertex.vert", projectPath + "shader/fragment.frag");
 
 	//printf("Nr of components in player entity: %i\n", entityManager->getNrOfComponentForPlayer(i));
 	while(!glfwWindowShouldClose(window))

@@ -23,7 +23,7 @@ void ECS::RenderMeshSystem::createVAOVBO() {
 		glGenBuffers(1, &EBO);
 		this->EBOS.push_back(EBO);
 
-		// Register the enetity.
+		// Register the entity.
 		registeredEntities.push_back(std::make_pair(std::make_tuple(VAO, VBO, EBO), ID));
 		glBindVertexArray(VAO);
 		// load data into vertex buffers

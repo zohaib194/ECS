@@ -1,10 +1,7 @@
 #include "ModelSystem.hpp"
-#include "Texture.hpp"
-#include "../header/globalVar.hpp"
-
 #include <stdio.h>
 
-modeler::Model::Model(){
+/*ECS::ModelSystem::ModelSystem(){
 	std::vector<unsigned int> entitiesID = entityManager->getAllEntitiesIDByComponent<ECS::ModelComponent>();
 
 	for(auto ID: entitiesID) {
@@ -21,39 +18,37 @@ modeler::Model::Model(std::string const &path, bool gamma)
 {
 	gammaCorrection = gamma;
     loadModel(path);
+}*/
+
+void ECS::ModelSystem::Draw(Shader shader)
+{
 }
 
-void modeler::Model::Draw(Shader shader)
+void ECS::ModelSystem::loadModel(ModelComponent *model)
 {
-    for(unsigned int i = 0; i < meshes.size(); i++)
-        meshes[i].Draw(shader);
-}
-
-void modeler::Model::loadModel()
-{
-
+	const std::string path = model->getDirectory();
     // read file via ASSIMP
     Assimp::Importer importer;
     const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
     // check for errors
     if(!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) // if is Not Zero
     {
-        helpers::assimp_errorCallback(0, importer.GetErrorString());
+        printf("From assimp with errorcode %d and description \"%s\n\"", 0, importer.GetErrorString());
         return;
     }
     // retrieve the directory path of the filepath
     directory = path.substr(0, path.find_last_of('/'));
 
     // process ASSIMP's root node recursively
-    processNode(scene->mRootNode, scene);
+    processNode(scene->mRootNode, scene, model);
 }
 
-modeler::Mesh modeler::Model::processMesh(aiMesh *mesh, const aiScene *scene)
+ECS::MeshComponent ECS::ModelSystem::processMesh(aiMesh *mesh, const aiScene *scene, ModelComponent *model)
 {
 	// data to fill
-	std::vector<Vertex> vertices;
+	std::vector<ECS::Vertex> vertices;
 	std::vector<unsigned int> indices;
-	std::vector<TextureA> textures;
+	std::vector<ECS::TextureA> textures;
 
 	// Walk through each of the mesh's vertices
 	for (unsigned int i = 0; i < mesh->mNumVertices; i++)
@@ -69,11 +64,11 @@ modeler::Mesh modeler::Model::processMesh(aiMesh *mesh, const aiScene *scene)
 			tempVertex.z = mesh->mVertices[i].z;
 		}
 		else{
-			printf("%s Found no Vertex\n", TAG_WARN.c_str());
+			printf("Found no Vertex\n");
 			tempVertex = glm::vec3(0.0f, 0.0f, 0.0f);
 		}
 
-		vertex.Position = tempVertex;
+		vertex.position = tempVertex;
 
 		// normals
 		if (mesh->HasNormals())
@@ -83,11 +78,11 @@ modeler::Mesh modeler::Model::processMesh(aiMesh *mesh, const aiScene *scene)
 			tempVertex.z = mesh->mNormals[i].z;
 		}
 		else{
-			printf("%s Found no Normals\n", TAG_WARN.c_str());
+			printf("Found no Normals\n");
 			tempVertex = glm::vec3(0.0f, 0.0f, 0.0f);
 		}
 
-		vertex.Normal = tempVertex;
+		vertex.normal = tempVertex;
 		// texture coordinates
 		if (mesh->HasTextureCoords(0)) // does the mesh contain texture coordinates?
 		{
@@ -96,12 +91,12 @@ modeler::Mesh modeler::Model::processMesh(aiMesh *mesh, const aiScene *scene)
 			// use models where a vertex can have multiple texture coordinates so we always take the first set (0).
 			vec.x = mesh->mTextureCoords[0][i].x;
 			vec.y = mesh->mTextureCoords[0][i].y;
-			vertex.TexCoords = vec;
+			vertex.texCoords = vec;
 		}
 		else{
 
-			printf("%s Found no textureCoords\n", TAG_WARN.c_str());
-			vertex.TexCoords = glm::vec2(0.0f, 0.0f);
+			printf("Found no textureCoords\n");
+			vertex.texCoords = glm::vec2(0.0f, 0.0f);
 		}
 		// tangent and bitangent
 		if (mesh->HasTangentsAndBitangents())
@@ -109,20 +104,20 @@ modeler::Mesh modeler::Model::processMesh(aiMesh *mesh, const aiScene *scene)
 			tempVertex.x = mesh->mTangents[i].x;
 			tempVertex.y = mesh->mTangents[i].y;
 			tempVertex.z = mesh->mTangents[i].z;
-			vertex.Tangent = tempVertex;
+			vertex.tangent = tempVertex;
 
 			// bitangent
 			tempVertex.x = mesh->mBitangents[i].x;
 			tempVertex.y = mesh->mBitangents[i].y;
 			tempVertex.z = mesh->mBitangents[i].z;
-			vertex.Bitangent = tempVertex;
+			vertex.bitangent = tempVertex;
 
 		}
 		else{
-			printf("%s Found no tangent or bitangent\n", TAG_WARN.c_str());
+			printf("Found no tangent or bitangent\n");
 
-			vertex.Tangent = glm::vec3(0.0f, 0.0f, 0.0f);
-			vertex.Bitangent = glm::vec3(0.0f, 0.0f, 0.0f);
+			vertex.tangent = glm::vec3(0.0f, 0.0f, 0.0f);
+			vertex.bitangent = glm::vec3(0.0f, 0.0f, 0.0f);
 		}
 
 		vertices.push_back(vertex);
@@ -145,24 +140,24 @@ modeler::Mesh modeler::Model::processMesh(aiMesh *mesh, const aiScene *scene)
 	// normal: texture_normalN
 
 	// 1. diffuse maps
-	std::vector<TextureA> diffuseMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse");
+	std::vector<ECS::TextureA> diffuseMaps = loadMaterialTextures(material, model, aiTextureType_DIFFUSE, "texture_diffuse");
 	textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
 	// 2. specular maps
-	std::vector<TextureA> specularMaps = loadMaterialTextures(material, aiTextureType_SPECULAR, "texture_specular");
+	std::vector<ECS::TextureA> specularMaps = loadMaterialTextures(material, model, aiTextureType_SPECULAR, "texture_specular");
 	textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
 	// 3. normal maps
-	std::vector<TextureA> normalMaps = loadMaterialTextures(material, aiTextureType_HEIGHT, "texture_normal");
+	std::vector<ECS::TextureA> normalMaps = loadMaterialTextures(material, model, aiTextureType_HEIGHT, "texture_normal");
 	textures.insert(textures.end(), normalMaps.begin(), normalMaps.end());
 	// 4. height maps
-	std::vector<TextureA> heightMaps = loadMaterialTextures(material, aiTextureType_AMBIENT, "texture_height");
+	std::vector<ECS::TextureA> heightMaps = loadMaterialTextures(material, model, aiTextureType_AMBIENT, "texture_height");
 	textures.insert(textures.end(), heightMaps.begin(), heightMaps.end());
 
 	// return a mesh object created from the extracted mesh data
-	return Mesh(vertices, indices, textures);
+	return ECS::MeshComponent("ChildComponent", vertices, indices, textures);
 }
 
 
-void modeler::Model::processNode(aiNode *node, const aiScene *scene)
+void ECS::ModelSystem::processNode(aiNode *node, const aiScene *scene, ModelComponent *model)
 {
     // process each mesh located at the current node
     for(unsigned int i = 0; i < node->mNumMeshes; i++)
@@ -170,18 +165,19 @@ void modeler::Model::processNode(aiNode *node, const aiScene *scene)
         // the node object only contains indices to index the actual objects in the scene.
         // the scene contains all the data, node is just to keep stuff organized (like relations between nodes).
         aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
-        meshes.push_back(processMesh(mesh, scene));
+        model->addMesh(processMesh(mesh, scene, model));
     }
     // after we've processed all of the meshes (if any) we then recursively process each of the children nodes
     for(unsigned int i = 0; i < node->mNumChildren; i++)
     {
-        processNode(node->mChildren[i], scene);
+        processNode(node->mChildren[i], scene, model);
     }
 }
 
-std::vector<modeler::TextureA> modeler::Model::loadMaterialTextures(aiMaterial *mat, aiTextureType type, std::string typeName)
-{
-    std::vector<TextureA> textures;
+std::vector<ECS::TextureA> ECS::ModelSystem::loadMaterialTextures(aiMaterial *mat, ModelComponent *model, aiTextureType type, std::string typeName)
+{	
+	std::vector<ECS::TextureA> textures_loaded = model->getLoadedTextures();
+    std::vector<ECS::TextureA> textures;
     for(unsigned int i = 0; i < mat->GetTextureCount(type); i++)
     {
         aiString str;
@@ -201,9 +197,9 @@ std::vector<modeler::TextureA> modeler::Model::loadMaterialTextures(aiMaterial *
         {   // if texture hasn't been loaded already, load it
             TextureA texture;
 			std::string myfile = directory + "/" + str.C_Str();
-			Texture tex =Texture(myfile.c_str());
+			GLuint texID = genTexture(myfile.c_str());
 
-			texture.id = tex.id();
+			texture.id = texID;
             texture.type = typeName;
             texture.path = str.C_Str();
             textures.push_back(texture);
@@ -211,4 +207,56 @@ std::vector<modeler::TextureA> modeler::Model::loadMaterialTextures(aiMaterial *
         }
     }
     return textures;
+}
+
+GLuint ECS::ModelSystem::genTexture(const char* filename) {
+	GLuint TextureID;
+
+	/*-----------------------------------------------------------------------------
+	*  Generate Texture and Bind it
+	*-----------------------------------------------------------------------------*/
+	glGenTextures(1, &TextureID);
+	glBindTexture(GL_TEXTURE_2D, TextureID); 
+
+	/*-----------------------------------------------------------------------------
+	*  Allocate Memory on the GPU
+	*-----------------------------------------------------------------------------*/
+   
+    int twidth, theight, nrComponents;
+	unsigned char* image = SOIL_load_image(filename, &twidth, &theight, &nrComponents, SOIL_LOAD_AUTO);
+	if (image)
+	{
+		GLenum format;
+		if (nrComponents == 1)
+			format = GL_RED;
+		else if (nrComponents == 3)
+			format = GL_RGB;
+		else if (nrComponents == 4)
+			format = GL_RGBA;
+		// target | lod | internal_format | width | height | border | format | type | data
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, twidth, theight, 0, format, GL_UNSIGNED_BYTE, image);
+		glGenerateMipmap(GL_TEXTURE_2D); // Generate MipMaps to use
+		SOIL_free_image_data(image); // Free the data read from file after creating opengl texture 
+
+	  /*-----------------------------------------------------------------------------
+	   *  Set Texture Parameters
+	   *-----------------------------------------------------------------------------*/
+	   // Set these parameters to avoid a black screen caused by improperly mipmapped textures
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glActiveTexture(GL_TEXTURE0);
+		/*-----------------------------------------------------------------------------
+		 *  Unbind texture
+		 *-----------------------------------------------------------------------------*/
+		 // glBindTexture(GL_TEXTURE_2D, 0);
+	}
+	else {
+
+		printf("SOIL cannot load image \n%s\n", filename);
+
+	}
+
+	return TextureID;
 }
