@@ -177,13 +177,13 @@ int main(){
 	
 
 */
-	player->addComponent(new ECS::ModelComponent("PLAYER_MODEL", projectPath + "/Game/Assets/modell_chessBoard.obj"));
+	player->addComponent(new ECS::ModelComponent("PLAYER_MODEL", projectPath + "Game/Assets/modell_chessBoard.obj"));
 
 	//ECS::ModelComponent* model = entityManager->getComponentByEntityID<ECS::ModelComponent*>(j);
 
 	// Activate render system once all the mesh components are added on entities.
-	systemManager->activateSystem<ECS::RenderMeshSystem>(projectPath + "shader/vertex.vert", projectPath + "shader/fragment.frag");
 	systemManager->activateSystem<ECS::ModelSystem>(projectPath + "shader/vertex.vert", projectPath + "shader/fragment.frag");
+	systemManager->activateSystem<ECS::RenderMeshSystem>(projectPath + "shader/vertex.vert", projectPath + "shader/fragment.frag");
 
 	//printf("Nr of components in player entity: %i\n", entityManager->getNrOfComponentForPlayer(i));
 	while(!glfwWindowShouldClose(window))

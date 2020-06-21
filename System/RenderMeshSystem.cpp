@@ -69,7 +69,7 @@ void ECS::RenderMeshSystem::createVAOVBO() {
 		ModelComponent* model = entityManager->getComponentByEntityID<ECS::ModelComponent*>(ID);
 
 		std::vector<ECS::MeshComponent> meshes = model->getMeshes();
-
+		std::cout << "LINE 72" + ID;
 		for (auto mesh : meshes) {
 			glGenBuffers(1, &VBO);
 			this->VBOS.push_back(VBO);
