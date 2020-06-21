@@ -33,24 +33,23 @@ namespace ECS{
     {
         public:
 
-            ModelSystem(std::string vertPath, std::string fragPath){
-                shaderProgram = shaderManager->getShader(std::vector<std::pair<GLenum, std::string>>{
-                    {GL_VERTEX_SHADER, vertPath},
-                    {GL_FRAGMENT_SHADER, fragPath},
-                });
+            ModelSystem() {
 
                 // Get all entities with model component.
                 std::vector<unsigned int> entitiesID = entityManager->getAllEntitiesIDByComponent<ECS::ModelComponent>();
 
                 for(unsigned int ID: entitiesID) {
-                    if(std::find(this->registeredEntities.begin(), this->registeredEntities.end(), ID) != this->registeredEntities.end()) {
-                        
+                    //if(std::find(this->registeredEntities.begin(), this->registeredEntities.end(), ID) != this->registeredEntities.end()) {
                         // Load the model to the entity modelcomponent
-                        loadModel(entityManager->getComponentByEntityID<ECS::ModelComponent*>(ID));
+                        this->loadModel(entityManager->getComponentByEntityID<ECS::ModelComponent*>(ID));
                         this->registeredEntities.push_back(ID);
-                    }
+                    //}
                     // TODO: Reassign the loaded model.
                 }
+            }
+
+            ModelSystem(std::string vertPath, std::string fragPath){
+                
             };
 
             /**

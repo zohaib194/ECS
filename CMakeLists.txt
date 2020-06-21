@@ -62,6 +62,14 @@ link_directories(${PROJECT_BINARY_DIR})
 endif(WINDOWS)
 
 
+# Copy all shaders into include directory.
+file(GLOB shaders ${PROJECT_SOURCE_DIR}/shader)
+file(COPY ${shaders} DESTINATION ${CMAKE_BINARY_DIR}/include)
+
+# Copy moveset file to build directory
+file(COPY ${PROJECT_SOURCE_DIR}/Game DESTINATION ${PROJECT_BINARY_DIR})
+
+
 add_executable(${projectname}
 	#src
 	${PROJECT_SOURCE_DIR}/main.cpp
@@ -78,6 +86,10 @@ add_executable(${projectname}
 	${PROJECT_SOURCE_DIR}/System/RenderMeshSystem.cpp
 	${PROJECT_SOURCE_DIR}/System/Shader.cpp
 	${PROJECT_SOURCE_DIR}/System/ShaderManager.cpp
+
+
+	${PROJECT_SOURCE_DIR}/Game/Environment/Camera.cpp
+
 #	#imgui
 #	${PROJECT_SOURCE_DIR}/source/imgui/imgui.cpp
 #	${PROJECT_SOURCE_DIR}/source/imgui/imgui_impl_glfw_gl3.cpp

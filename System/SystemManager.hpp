@@ -20,7 +20,7 @@ namespace ECS {
 			}
 
 			template <class T>
-			void activateSystem(std::string vertPath, std::string fragPath){
+			void activateSystem(std::string vertPath="", std::string fragPath=""){
 				if(!std::is_base_of<ECS::System, T>::value){
 					printf("[ERROR] Given system is not derived from class System\n");
 					return;
@@ -30,11 +30,11 @@ namespace ECS {
 					this->systems[SystemId] = new T(vertPath, fragPath);
 					SystemId++;
 
-				}/* else {
+				} else {
 					this->systems[SystemId] = new T();
 					SystemId++;
 
-				}*/
+				}
 
 			}
 

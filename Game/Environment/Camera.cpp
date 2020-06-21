@@ -1,5 +1,5 @@
-#include "../environment/Camera.hpp"
-#include "../helpers/global_function.hpp"
+#include "Camera.hpp"
+//#include "../helpers/global_function.hpp"
 
 //! Percentage size of width and hight relative to monitor.
 const glm::vec2 relativeWindowSize = glm::vec2(60, 60);

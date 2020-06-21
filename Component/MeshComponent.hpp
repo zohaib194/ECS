@@ -23,7 +23,7 @@ namespace ECS {
 			MeshComponent(std::string name, 
 				std::vector<ECS::Vertex> vertices, 
 				std::vector<unsigned int> indices, 
-				std::vector<ECS::TextureA> textures) : ECS::Component(name){
+				std::vector<ECS::TextureA> textures = std::vector<ECS::TextureA>()) : ECS::Component(name){
 				this->vertices = vertices;
 				this->indices = indices;
 				this->textures = textures;

@@ -122,7 +122,6 @@ int main(){
 
 	GLFWwindow* window = glfw_setup();
 
-
 	entityManager = new ECS::EntityManager();
 	systemManager = new ECS::SystemManager();
 	shaderManager = new ECS::ShaderManager();
@@ -177,12 +176,10 @@ int main(){
 	
 
 */
-	player->addComponent(new ECS::ModelComponent("PLAYER_MODEL", projectPath + "Game/Assets/modell_chessBoard.obj"));
-
-	//ECS::ModelComponent* model = entityManager->getComponentByEntityID<ECS::ModelComponent*>(j);
+	player->addComponent(new ECS::ModelComponent("PLAYER_MODEL", projectPath + "Game/Assets/Bishop.obj"));
 
 	// Activate render system once all the mesh components are added on entities.
-	systemManager->activateSystem<ECS::ModelSystem>(projectPath + "shader/vertex.vert", projectPath + "shader/fragment.frag");
+	systemManager->activateSystem<ECS::ModelSystem>();
 	systemManager->activateSystem<ECS::RenderMeshSystem>(projectPath + "shader/vertex.vert", projectPath + "shader/fragment.frag");
 
 	//printf("Nr of components in player entity: %i\n", entityManager->getNrOfComponentForPlayer(i));

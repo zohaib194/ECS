@@ -69,7 +69,6 @@ void ECS::RenderMeshSystem::createVAOVBO() {
 		ModelComponent* model = entityManager->getComponentByEntityID<ECS::ModelComponent*>(ID);
 
 		std::vector<ECS::MeshComponent> meshes = model->getMeshes();
-		std::cout << "LINE 72" + ID;
 		for (auto mesh : meshes) {
 			glGenBuffers(1, &VBO);
 			this->VBOS.push_back(VBO);
@@ -123,18 +122,42 @@ void ECS::RenderMeshSystem::draw(){
 	for(auto entityData : this->registeredEntities){
 		MeshComponent* mesh = entityManager->getComponentByEntityID<ECS::MeshComponent*>(entityData.second);
 
-		glBindVertexArray(std::get<0>(entityData.first));
-		glBindBuffer(GL_ARRAY_BUFFER, std::get<1>(entityData.first));
+		// Does entities contain mesh component?
+		if(mesh != nullptr) {
+			glBindVertexArray(std::get<0>(entityData.first));
+			glBindBuffer(GL_ARRAY_BUFFER, std::get<1>(entityData.first));
 
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, std::get<2>(entityData.first));
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, std::get<2>(entityData.first));
 
-		//printf("%i, %i, %i, %i \n", std::get<0>(entityData.first), std::get<1>(entityData.first), std::get<2>(entityData.first), entityData.second);
-		glDrawElements(GL_TRIANGLES, mesh->getIndices().size(), GL_UNSIGNED_INT, 0);
+			//printf("%i, %i, %i, %i \n", std::get<0>(entityData.first), std::get<1>(entityData.first), std::get<2>(entityData.first), entityData.second);
+			glDrawElements(GL_TRIANGLES, mesh->getIndices().size(), GL_UNSIGNED_INT, 0);
 
 
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+			glBindBuffer(GL_ARRAY_BUFFER, 0);
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
-		glBindVertexArray(0);
+			glBindVertexArray(0);		
+		}
+
+		// Entity contains model component?
+		ModelComponent* model = entityManager->getComponentByEntityID<ECS::ModelComponent*>(entityData.second);
+
+		if(model != nullptr) {
+			std::vector<ECS::MeshComponent> meshes = model->getMeshes();
+			for(auto mesh : meshes){
+				glBindVertexArray(std::get<0>(entityData.first));
+				glBindBuffer(GL_ARRAY_BUFFER, std::get<1>(entityData.first));
+
+				glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, std::get<2>(entityData.first));
+
+				glDrawElements(GL_TRIANGLES, mesh.getIndices().size(), GL_UNSIGNED_INT, 0);
+
+
+				glBindBuffer(GL_ARRAY_BUFFER, 0);
+				glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+				glBindVertexArray(0);
+			}
+		}
 	}
 }

@@ -17,6 +17,9 @@ namespace ECS {
 	class RenderMeshSystem : public ECS::System {
 
 		public:
+			RenderMeshSystem() {
+				
+			}
 			RenderMeshSystem(std::string vertPath, std::string fragPath){
 				shaderProgram = shaderManager->getShader(std::vector<std::pair<GLenum, std::string>>{
 					{GL_VERTEX_SHADER, vertPath},

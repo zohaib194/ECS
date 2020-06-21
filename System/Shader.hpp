@@ -7,6 +7,7 @@
 #endif
 #include <vector>
 #include <map>
+#include <string>
 
 /**
  * @brief Container for classes and structures associated with modeling consepts.
