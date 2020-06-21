@@ -19,7 +19,9 @@ modeler::Model::Model(std::string const &path, bool gamma)
 	gammaCorrection = gamma;
     loadModel(path);
 }*/
-
+void ECS::ModelSystem::update(float dt) {
+	
+}
 void ECS::ModelSystem::Draw(Shader shader)
 {
 }

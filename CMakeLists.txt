@@ -1,5 +1,3 @@
-
-
 #CMAKE FOR GLFW GLEW
 cmake_minimum_required(VERSION 3.1)
 set(CMAKE_CXX_STANDARD 14)
@@ -44,7 +42,7 @@ link_directories(${GLFW_BINARY_DIR})
 
 add_subdirectory(libs/assimp)
 set(ASSIMP_LIBRARY_DIRS ${PROJECT_SOURCE_DIR}libs/assimp/build/code)
-set(ASSIMP_INCLUDE_DIRS "lib/assimp/include" ${PROJECT_SOURCE_DIR}libs/assimp/build/include)
+set(ASSIMP_INCLUDE_DIRS "lib/assimp/include" ${PROJECT_SOURCE_DIR}/build/libs/assimp/include)
 include_directories(${ASSIMP_INCLUDE_DIRS})
 link_directories(${ASSIMP_LIBRARY_DIRS})
 
